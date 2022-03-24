@@ -1,0 +1,36 @@
+---
+- name: Installing and launch filebeat
+  hosts: webservers
+  become: yes
+  tasks:
+
+
+    #use command module
+  - name: Download filbeat .deb file
+    command: curl -L -O http://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb
+
+    #use command moduel
+  - name: Install metricbeat .deb
+    command: dpkg -i metricbeat-7.4.0-amd64.deb
+
+    #use copy module
+  - name: drop in metricbeat.yml
+    copy:
+      src: /etc/ansible/files/metricbeat-config.yml
+      dest: /etc/metricbeat/metricbeat.yml
+
+    #use command module
+  - name: Enable and Configure system module
+    command: sudo metricbeat modules enable system
+
+    #use command module
+  - name: Setup metricbeat
+    command: metricbeat setup
+
+    #use command module
+  - name: start metricbeat service
+    command: service metricbeat start
+
+    #use command -e
+  - name: metricbeat -e
+    command: metricbeat -e
